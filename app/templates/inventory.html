@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card">
+  <div class="filters">
+    <input id="i_material_id" placeholder="按物料ID筛选（可空）">
+    <select id="i_type">
+      <option value="">全部类型</option>
+      <option value="in">入库</option>
+      <option value="out">出库</option>
+      <option value="adjust">调整</option>
+    </select>
+    <button class="btn" onclick="loadTransactions()">查询</button>
+    <button class="btn primary" onclick="openTxModal()">新增流水</button>
+    <button type="button" class="btn" onclick="exportInventoryExcel()">导出 Excel</button>
+  </div>
+</div>
+<script>
+function exportInventoryExcel() {
+  const mid = document.getElementById('i_material_id').value.trim();
+  const tt = document.getElementById('i_type').value;
+  let u = '/export/inventory';
+  const q = [];
+  if (mid) q.push('material_id=' + encodeURIComponent(mid));
+  if (tt) q.push('transaction_type=' + encodeURIComponent(tt));
+  if (q.length) u += '?' + q.join('&');
+  location.href = u;
+}
+</script>
+<div id="msg" class="msg"></div>
+<div class="card">
+  <div class="list-total"><span id="tx-record-total">共 0 条记录</span></div>
+  <table>
+    <thead>
+      <tr><th>ID</th><th>物料</th><th>类型</th><th>数量</th><th>单价</th><th>来源类型</th><th>来源单号</th><th>备注</th><th>创建时间</th></tr>
+    </thead>
+    <tbody id="tx-tbody"></tbody>
+  </table>
+</div>
+
+<div id="tx-modal" class="modal hidden">
+  <div class="modal-body">
+    <h3>新增库存流水</h3>
+    <form class="form-grid">
+      <label>物料<select id="t_material_id"></select></label>
+      <label>流水类型<select id="t_transaction_type"><option value="in">入库</option><option value="out">出库</option><option value="adjust">调整</option></select></label>
+      <label>数量<input id="t_qty" type="number" step="0.0001" value="1"></label>
+      <label>单价<input id="t_unit_price" type="number" step="0.01" value="0"></label>
+      <label>来源类型<input id="t_reference_type" placeholder="purchase / production / manual"></label>
+      <label>来源单号<input id="t_reference_no"></label>
+      <label class="full">备注<textarea id="t_remark"></textarea></label>
+    </form>
+    <div class="btn-row">
+      <button class="btn primary" onclick="saveTx()">保存</button>
+      <button class="btn" onclick="closeTxModal()">取消</button>
+    </div>
+  </div>
+</div>
+
+<script src="/static/js/inventory.js"></script>
+{% endblock %}

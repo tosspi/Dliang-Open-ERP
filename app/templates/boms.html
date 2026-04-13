@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card">
+  <div class="filters">
+    <input id="b_product_code" placeholder="产品编码">
+    <input id="b_product_name" placeholder="产品名称">
+    <button class="btn primary" onclick="openBomModal()">新增 BOM</button>
+    <a class="btn" href="/export/boms">导出 Excel</a>
+  </div>
+</div>
+<div id="msg" class="msg"></div>
+<div class="card">
+  <div class="list-total"><span id="bom-record-total">共 0 条记录</span></div>
+  <table>
+    <thead>
+      <tr><th>产品编码</th><th>产品名称</th><th>BOM版本</th><th>版本说明</th><th>状态</th><th>当前生效</th><th>创建时间</th><th>更新时间</th><th>操作</th></tr>
+    </thead>
+    <tbody id="bom-tbody"></tbody>
+  </table>
+</div>
+
+<div id="bom-modal" class="modal hidden">
+  <div class="modal-body">
+    <h3 id="bom-title">新增 BOM</h3>
+    <form id="bom-form" class="form-grid">
+      <input type="hidden" id="bo_id">
+      <label>产品编码
+        <select id="bo_product_code" onchange="onSelectBomProduct()" required></select>
+      </label>
+      <label>产品名称<input id="bo_product_name" readonly></label>
+      <label>BOM版本<input id="bo_bom_version" required></label>
+      <label>状态<select id="bo_status"><option value="draft">draft（草稿）</option><option value="released">released（已发布）</option><option value="obsolete">obsolete（作废）</option></select></label>
+      <label>设为当前<select id="bo_is_current"><option value="false">否</option><option value="true">是</option></select></label>
+      <label class="full">版本说明<textarea id="bo_revision_note"></textarea></label>
+    </form>
+    <div class="btn-row">
+      <button class="btn primary" onclick="saveBom()">保存</button>
+      <button class="btn" onclick="closeBomModal()">取消</button>
+    </div>
+  </div>
+</div>
+
+<script src="/static/js/boms.js"></script>
+{% endblock %}

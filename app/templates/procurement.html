@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card">
+  <p class="muted-hint">以下为<strong>单个 BOM × 产量</strong>试算。多产品汇总请用侧栏<strong>生产管理 → 生产计划</strong>汇总缺料并生成草稿采购单。</p>
+  <div class="filters">
+    <label>选择BOM<select id="p_bom_id"></select></label>
+    <label>计划生产数量<input id="p_qty" type="number" step="0.01" value="1"></label>
+    <button class="btn primary" onclick="calcShortage()">计算缺料</button>
+    <button type="button" class="btn" onclick="exportProcurementExcel()">导出 Excel</button>
+  </div>
+</div>
+<script>
+function exportProcurementExcel() {
+  const bomId = document.getElementById('p_bom_id').value;
+  const qty = document.getElementById('p_qty').value;
+  if (!bomId) { alert('请先选择 BOM'); return; }
+  const q = parseFloat(qty);
+  if (!q || q <= 0) { alert('计划生产数量须大于 0'); return; }
+  location.href = '/export/procurement?bom_id=' + encodeURIComponent(bomId) + '&production_qty=' + encodeURIComponent(qty);
+}
+</script>
+<div id="msg" class="msg"></div>
+<div class="card">
+  <div class="card-title-row">
+    <h3>缺料明细</h3>
+    <span id="p-record-total" class="list-total-edge">共 0 条记录</span>
+  </div>
+  <table>
+    <thead>
+      <tr><th>编码</th><th>名称</th><th>规格/图号</th><th>供应商</th><th>单套用量</th><th>总需求量</th><th>当前库存</th><th>安全库存</th><th>安全缺口</th><th>清库缺口</th><th>建议采购量</th><th>单价</th><th>预估金额</th></tr>
+    </thead>
+    <tbody id="p-tbody"></tbody>
+  </table>
+  <p>总采购金额：<b id="p-total">0</b></p>
+</div>
+<div class="card">
+  <div class="card-title-row">
+    <h3>按供应商分组</h3>
+    <span id="p-groups-total" class="list-total-edge">共 0 组</span>
+  </div>
+  <div id="supplier-groups"></div>
+</div>
+<script src="/static/js/procurement.js"></script>
+{% endblock %}

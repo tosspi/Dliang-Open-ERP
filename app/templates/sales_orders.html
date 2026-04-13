@@ -1,0 +1,127 @@
+{% extends "base.html" %}
+{% block content %}
+<div id="msg" class="msg"></div>
+<div class="card">
+  <p class="muted-hint">销售订单<strong>统一列表</strong>：淘宝、WooCommerce 同步单与<strong>手工单</strong>合并管理。手工单可新建、草稿修改、确认后本地登记发货与发票。淘宝在「等待卖家发货」时可 <code>线下发货</code> 回写；Woo 在 <code>processing / on-hold</code> 时可更新运单 meta 并可选将订单标为 <code>completed</code>。</p>
+  <div class="filters">
+    <button type="button" class="btn primary" id="so_new_manual">新建手工订单</button>
+    <button type="button" class="btn primary" id="so_sync">同步淘宝订单</button>
+    <button type="button" class="btn primary" id="so_sync_wc">同步 WooCommerce</button>
+    <span id="so-total" class="list-total-edge">共 0 条</span>
+  </div>
+  <table>
+    <thead>
+      <tr>
+        <th>内部单号</th><th>渠道</th><th>客户/平台单号</th><th>买家</th><th>平台状态</th><th>本地状态</th><th>发票</th><th>总额</th><th>付款时间</th><th>发货信息</th><th>操作</th>
+      </tr>
+    </thead>
+    <tbody id="so-tbody"></tbody>
+  </table>
+</div>
+
+<div id="so-ship-modal" class="modal hidden">
+  <div class="modal-body" style="max-width:440px;">
+    <h3 style="margin-top:0" id="so_ship_title">发货回写</h3>
+    <p id="so-ship-hint" class="muted-hint"></p>
+    <input type="hidden" id="so_ship_order_id">
+    <input type="hidden" id="so_ship_channel" value="taobao">
+
+    <div id="ship_panel_taobao">
+      <label style="display:block;margin-top:10px;">物流公司编码
+        <input id="so_company_code" list="so-logistics-list" placeholder="如 STO、YTO、ZTO" style="width:100%;margin-top:6px;">
+        <datalist id="so-logistics-list">
+          <option value="STO"><option value="YTO"><option value="ZTO"><option value="YUNDA"><option value="EMS"><option value="SF"><option value="JD"><option value="DBKD">
+        </datalist>
+      </label>
+      <p class="muted-hint" style="margin:6px 0 0;font-size:12px;">编码须与淘宝开放平台「物流公司」文档一致。</p>
+      <label style="display:block;margin-top:12px;">运单号
+        <input id="so_out_sid" style="width:100%;margin-top:6px;">
+      </label>
+    </div>
+
+    <div id="ship_panel_woo" class="hidden">
+      <label style="display:block;margin-top:10px;">运单号
+        <input id="so_wc_tracking" style="width:100%;margin-top:6px;">
+      </label>
+      <label style="display:block;margin-top:12px;">承运商（可选，写入订单 meta）
+        <input id="so_wc_carrier" placeholder="如 顺丰、YTO" style="width:100%;margin-top:6px;">
+      </label>
+      <label style="display:block;margin-top:12px;">
+        <input type="checkbox" id="so_wc_completed" checked> 同步将订单标为已完成（completed）
+      </label>
+      <p class="muted-hint" style="margin:8px 0 0;font-size:12px;">会写入 meta：<code>_tracking_number</code>、<code>_tracking_company</code>（与部分发货插件兼容，非万能）。</p>
+    </div>
+
+    <div id="ship_panel_manual" class="hidden">
+      <label style="display:block;margin-top:10px;">运单号
+        <input id="so_manual_tracking" style="width:100%;margin-top:6px;">
+      </label>
+      <label style="display:block;margin-top:12px;">承运商（可选）
+        <input id="so_manual_carrier" placeholder="如 顺丰、YTO" style="width:100%;margin-top:6px;">
+      </label>
+      <p class="muted-hint" style="margin:8px 0 0;font-size:12px;">仅写入本系统销售订单，不回写电商平台。</p>
+    </div>
+
+    <div class="btn-row" style="margin-top:16px;">
+      <button type="button" class="btn primary" id="so_ship_save">确认提交</button>
+      <button type="button" class="btn" id="so_ship_cancel">取消</button>
+    </div>
+  </div>
+</div>
+
+<div id="so-invoice-modal" class="modal hidden">
+  <div class="modal-body" style="max-width:420px;">
+    <h3 style="margin-top:0">登记发票</h3>
+    <input type="hidden" id="so_inv_order_id">
+    <label style="display:block;margin-top:10px;">发票状态
+      <select id="so_inv_status" style="width:100%;margin-top:6px;">
+        <option value="none">未开票</option>
+        <option value="pending">待开票</option>
+        <option value="issued">已开票</option>
+        <option value="not_required">不开票</option>
+      </select>
+    </label>
+    <label style="display:block;margin-top:12px;">发票号码（已开票时必填）
+      <input id="so_inv_no" style="width:100%;margin-top:6px;">
+    </label>
+    <label style="display:block;margin-top:12px;">开票日期（可选，留空则已开票时用当前时间）
+      <input type="datetime-local" id="so_inv_at" style="width:100%;margin-top:6px;">
+    </label>
+    <div class="btn-row" style="margin-top:16px;">
+      <button type="button" class="btn primary" id="so_inv_save">保存</button>
+      <button type="button" class="btn" id="so_inv_cancel">取消</button>
+    </div>
+  </div>
+</div>
+
+<div id="so-manual-modal" class="modal hidden">
+  <div class="modal-body" style="max-width:720px;">
+    <h3 style="margin-top:0" id="so_manual_title">新建手工订单</h3>
+    <input type="hidden" id="so_manual_order_id">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+      <label>买家/客户名<input id="so_m_buyer" style="width:100%;margin-top:4px;"></label>
+      <label>客户单号/合同号<input id="so_m_cust_ref" placeholder="可选" style="width:100%;margin-top:4px;"></label>
+      <label>收货人<input id="so_m_recv_name" style="width:100%;margin-top:4px;"></label>
+      <label>手机<input id="so_m_recv_mobile" style="width:100%;margin-top:4px;"></label>
+    </div>
+    <label style="display:block;margin-top:10px;">收货地址<textarea id="so_m_recv_addr" rows="2" style="width:100%;margin-top:4px;"></textarea></label>
+    <label style="display:block;margin-top:10px;">备注<textarea id="so_m_remark" rows="2" style="width:100%;margin-top:4px;"></textarea></label>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px;">
+      <label>运费<input id="so_m_post_fee" type="number" step="0.01" value="0" style="width:100%;margin-top:4px;"></label>
+      <label id="so_m_confirm_wrap" style="align-self:end;"><input type="checkbox" id="so_m_confirm_now"> 创建后直接待发货（跳过草稿）</label>
+    </div>
+    <p class="muted-hint" style="margin:10px 0 6px;font-size:12px;">明细：优先从<strong>产品</strong>下拉选择（自动带品名、含税售价、关联物料）；也可只填品名+单价，或只填物料编码。</p>
+    <table style="width:100%;font-size:13px;">
+      <thead><tr><th>产品</th><th>品名</th><th>物料编码</th><th>数量</th><th>单价</th><th>行小计(可空)</th><th></th></tr></thead>
+      <tbody id="so_m_lines"></tbody>
+    </table>
+    <button type="button" class="btn sm" id="so_m_add_line" style="margin-top:8px;">+ 增行</button>
+    <div class="btn-row" style="margin-top:16px;">
+      <button type="button" class="btn primary" id="so_manual_save">保存</button>
+      <button type="button" class="btn" id="so_manual_cancel">取消</button>
+    </div>
+  </div>
+</div>
+
+<script src="/static/js/sales_orders.js"></script>
+{% endblock %}

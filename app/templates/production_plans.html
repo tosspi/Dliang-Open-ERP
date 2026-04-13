@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% block content %}
+<div id="msg" class="msg"></div>
+<div class="card">
+  <p class="muted-hint">维护<strong>生产计划</strong>（多行 BOM × 计划产量），<strong>汇总缺料</strong>后按供应商<strong>一键生成草稿采购订单</strong>；请在「采购订单」中核对并保存/下达。单 BOM 试算仍可用侧栏「缺料/采购建议」。</p>
+  <div class="filters">
+    <button type="button" class="btn primary" id="pp_new">新建生产计划</button>
+    <span id="pp-list-total" class="list-total-edge">共 0 条</span>
+  </div>
+  <table>
+    <thead>
+      <tr>
+        <th>计划单号</th><th>计划日期</th><th>状态</th><th>行数</th><th>操作</th>
+      </tr>
+    </thead>
+    <tbody id="pp-tbody"></tbody>
+  </table>
+</div>
+
+<div id="pp-procurement-panel" class="card hidden">
+  <div class="card-title-row">
+    <h3>缺料与半自动采购</h3>
+    <span id="pp-proc-label" class="muted-hint"></span>
+  </div>
+  <div class="btn-row" style="margin-bottom:12px;">
+    <button type="button" class="btn primary" id="pp_calc_shortage">计算汇总缺料</button>
+    <button type="button" class="btn" id="pp_draft_pos">按供应商生成草稿采购订单</button>
+  </div>
+  <div class="card-title-row">
+    <h4 style="margin:0">缺料明细</h4>
+    <span id="pp-s-records" class="list-total-edge">共 0 条</span>
+  </div>
+  <table>
+    <thead>
+      <tr><th>编码</th><th>名称</th><th>规格/图号</th><th>供应商</th><th>单套用量</th><th>总需求量</th><th>当前库存</th><th>安全库存</th><th>安全缺口</th><th>清库缺口</th><th>建议采购量</th><th>单价</th><th>预估金额</th></tr>
+    </thead>
+    <tbody id="pp-s-tbody"></tbody>
+  </table>
+  <p>总采购金额：<b id="pp-s-total">0</b></p>
+  <div class="card-title-row" style="margin-top:16px;">
+    <h4 style="margin:0">按供应商分组</h4>
+    <span id="pp-s-groups" class="list-total-edge">共 0 组</span>
+  </div>
+  <div id="pp-supplier-groups"></div>
+</div>
+
+<div id="pp-modal" class="modal hidden">
+  <div class="modal-body" style="max-width:720px;">
+    <h3 id="pp-modal-title">生产计划</h3>
+    <input type="hidden" id="pp_id">
+    <div class="form-grid">
+      <label>计划日期<input id="pp_plan_date" type="date" required></label>
+      <label class="full">备注<input id="pp_remark" placeholder="选填"></label>
+    </div>
+    <h4 style="margin:16px 0 8px;">计划明细（BOM × 计划产量）</h4>
+    <table class="pp-lines-table">
+      <thead>
+        <tr><th>BOM</th><th>计划产量</th><th>行备注</th><th></th></tr>
+      </thead>
+      <tbody id="pp_lines_tbody"></tbody>
+    </table>
+    <button type="button" class="btn sm" id="pp_add_line">加一行</button>
+    <p class="muted-hint" style="margin-top:8px;">同一 BOM 可写多行（分批产量会合并进缺料计算）。仅<strong>草稿</strong>可改明细。</p>
+    <div class="btn-row" style="margin-top:16px;">
+      <button type="button" class="btn primary" id="pp_save">保存</button>
+      <button type="button" class="btn" id="pp_confirm" title="确认后仍可汇总缺料与生成草稿采购单">确认计划</button>
+      <button type="button" class="btn" id="pp_close">关闭</button>
+    </div>
+  </div>
+</div>
+
+<script src="/static/js/production_plans.js"></script>
+{% endblock %}

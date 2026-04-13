@@ -1,0 +1,60 @@
+大亮ERP 软件许可协议（自用 · 禁止买卖）
+Dalang ERP Software License Agreement (Personal / Internal Use — No Sale)
+
+版权所有 (c) 2026 大亮ERP（Dalang ERP）开源作者及贡献者
+Copyright (c) 2026 Dalang ERP open source authors and contributors
+
+以下条款对「软件」均指本仓库所提供的计算机程序及其文档（含源代码与构建产物）。
+
+---
+
+## 一、您可以做什么（许可范围）
+
+在遵守第二节的前提下，著作权人授予您免费、不可再许可的权利：
+
+1. **安装与运行**：在您本人控制的环境，或您所隶属的 **单一法律主体**（例如您任职的一家公司）**内部** 安装、运行本软件，用于该主体自身的经营管理或您个人的非转售目的。
+2. **学习与修改**：阅读、研究源代码，并为上述范围内的使用目的进行修改；修改后的版本仍受本协议约束。
+3. **备份**：制作合理数量的备份副本，且不得用于违反本协议的目的。
+
+---
+
+## 二、您不可以做什麽（明确禁止）
+
+1. **禁止买卖与变相收费**：不得以销售、出租、出借、捆绑标价、收取「授权费」「拷贝费」「安装费」等方式，将本软件或其主要基于本软件的衍生版本 **作为商品或许可标的** 向他人提供并 **收取对价**（著作权人书面明确授权的除外）。
+2. **禁止以本软件为主对外提供收费软件服务**：不得以向 **外部客户** 提供 **有偿** 的「托管本软件 / 代部署本软件 / 以本软件为主要界面的运营服务」等形式，将本软件作为您对外营利产品或服务的主要交付物（您使用本软件处理自身业务、向客户销售的是您自有产品/服务而非「本软件本身」的，不在此限；边界有疑问请咨询专业律师）。
+3. **保留声明**：删除或篡改本软件中的著作权、许可与免责声明。
+
+---
+
+## 三、再分发
+
+1. 若您向第三方 **无偿** 提供本仓库源代码副本（例如镜像、转发压缩包），须 **同时提供本 LICENSE 全文**，且不得附加与本协议冲突的限制。
+2. 任何再分发 **不得** 违反第二节（例如不得将再分发作为收费软件包的一部分对外销售）。
+
+---
+
+## 四、无担保与责任限制
+
+本软件按「现状」提供，不提供任何明示或暗示的保证。在法律允许的最大范围内，著作权人对因使用本软件而产生的任何损害不承担责任。完整免责见仓库内 DISCLAIMER.md。
+
+---
+
+## 五、协议终止与适用法律
+
+您违反本协议时，相关许可自动终止；继续使用即构成侵权风险。本协议的解释与适用以中华人民共和国法律为优先参考；涉跨境争议时，亦可适用您所在地强制性法律。
+
+---
+
+## English summary (for reference; in case of conflict, consult qualified counsel)
+
+You may use, run, and modify the Software **for yourself** or **within a single organization you belong to**, for **internal / non–software-resale** purposes, free of charge.
+
+You **may not** sell, rent, or charge for the Software or a derivative where the Software is the **primary commercial offering**, nor offer **paid third-party hosting / SaaS** where this Software is the **main deliverable**, except with **written permission** from the copyright holder(s).
+
+Redistribution of source **without charge** must include this license and must not violate the prohibitions above.
+
+THE SOFTWARE IS PROVIDED **“AS IS”**, WITHOUT WARRANTY. See DISCLAIMER.md.
+
+---
+
+若需 **商业销售、对外收费部署、OEM 集成** 等用途，须另行取得著作权人的 **书面授权**。

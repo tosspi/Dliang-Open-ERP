@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card">
+  <div class="filters">
+    <input id="s_code" placeholder="按供应商编码搜索">
+    <input id="s_name" placeholder="按公司名称搜索">
+    <input id="s_credit_code" placeholder="按统一信用代码搜索">
+    <button class="btn primary" onclick="openSupplierModal()">新增供应商</button>
+    <a class="btn" href="/export/suppliers">导出 Excel</a>
+  </div>
+</div>
+
+<div id="msg" class="msg"></div>
+
+<div class="card">
+  <div class="list-total"><span id="supplier-record-total">共 0 条记录</span></div>
+  <table>
+    <thead>
+      <tr>
+        <th>供应商编码</th><th>公司名称</th><th>供应商分类</th><th>账期(天)</th><th>统一信用代码</th><th>开户行</th><th>账号</th><th>行号</th><th>联系人</th><th>电话</th><th>地址</th><th>状态</th><th>操作</th>
+      </tr>
+    </thead>
+    <tbody id="supplier-tbody"></tbody>
+  </table>
+</div>
+
+<div id="supplier-modal" class="modal hidden">
+  <div class="modal-body">
+    <h3 id="supplier-modal-title">新增供应商</h3>
+    <form id="supplier-form" class="form-grid">
+      <input type="hidden" id="sp_id">
+      <label>供应商编码<input id="sp_supplier_code" placeholder="保存后自动生成" readonly></label>
+      <label>公司名称<input id="sp_company_name" required></label>
+      <div class="full form-block">
+        <div class="form-block-title">供应商分类（可多选）</div>
+        <div id="sp_supplier_categories" class="checkbox-group"></div>
+      </div>
+      <div class="full form-block">
+        <div class="form-block-title">管理物料（可多选）</div>
+        <input id="sp_material_kw" placeholder="输入料号/名称过滤">
+        <div id="sp_managed_materials" class="checkbox-group scroll-checkbox-list"></div>
+      </div>
+      <label>账期（天）<input id="sp_payment_term_days" type="number" min="0" step="1" placeholder="留空则采购单不推算付款截止日"></label>
+      <label>统一信用代码<input id="sp_credit_code"></label>
+      <label>开户行<input id="sp_bank_name"></label>
+      <label>账号<input id="sp_bank_account"></label>
+      <label>行号<input id="sp_bank_no"></label>
+      <label>联系人<input id="sp_contact_person"></label>
+      <label>电话<input id="sp_phone"></label>
+      <label class="full">地址<input id="sp_address"></label>
+    </form>
+    <div class="btn-row">
+      <button class="btn primary" onclick="saveSupplier()">保存</button>
+      <button class="btn" onclick="closeSupplierModal()">取消</button>
+    </div>
+  </div>
+</div>
+
+<script src="/static/js/suppliers.js"></script>
+{% endblock %}

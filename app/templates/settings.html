@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block content %}
+<div id="msg" class="msg"></div>
+<div class="card">
+  <h3 style="margin-top:0">公司基础信息</h3>
+  <p class="muted-hint">用于采购单 PDF、新建询价单预填等（买方公司信息）。淘宝、WooCommerce 等电商接口请在侧栏 <strong>设置 → 电商集成</strong> 中配置。</p>
+  <form id="company-form" class="form-grid">
+    <label>公司名称<input id="cp_company_name" required></label>
+    <label>税号<input id="cp_tax_no"></label>
+    <label>开户行<input id="cp_bank_name"></label>
+    <label>账号<input id="cp_bank_account"></label>
+    <label class="full">地址<input id="cp_address"></label>
+    <label>联系人<input id="cp_contact_person"></label>
+    <label>电话<input id="cp_phone"></label>
+  </form>
+  <div class="btn-row" style="margin-top:12px">
+    <button type="button" class="btn primary" id="cp_save">保存</button>
+  </div>
+</div>
+<script src="/static/js/settings.js"></script>
+{% endblock %}

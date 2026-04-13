@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ page_title }} - 大亮ERP</title>
+  <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+  <div class="layout">
+    <aside class="sidebar">
+      <h2>大亮ERP</h2>
+      <nav class="sidebar-nav">
+        <a href="/ui" class="{% if request.url.path in ['/ui', '/ui/dashboard'] %}active{% endif %}">仪表盘</a>
+        <a href="/ui/categories" class="{% if request.url.path == '/ui/categories' %}active{% endif %}">类别管理</a>
+        {% set materials_menu_open = request.url.path == '/ui/materials' or request.url.path == '/ui/standard-materials' or request.url.path == '/ui/nonstandard-materials' or request.url.path == '/ui/revisions' or (request.url.path.startswith('/ui/materials/') and '/revisions' in request.url.path) %}
+        <details class="sidebar-group"{% if materials_menu_open %} open{% endif %}>
+          <summary class="sidebar-group-summary">物料管理</summary>
+          <div class="sidebar-subnav">
+            <a href="/ui/materials" class="{% if request.url.path == '/ui/materials' or (request.url.path.startswith('/ui/materials/') and '/revisions' in request.url.path) %}active{% endif %}">物料主数据</a>
+            <a href="/ui/standard-materials" class="{% if request.url.path == '/ui/standard-materials' %}active{% endif %}">标准件管理</a>
+            <a href="/ui/nonstandard-materials" class="{% if request.url.path == '/ui/nonstandard-materials' %}active{% endif %}">非标件管理</a>
+            <a href="/ui/revisions" class="{% if request.url.path == '/ui/revisions' %}active{% endif %}">版本管理</a>
+          </div>
+        </details>
+        {% set product_open = '/ui/self-products' in request.url.path or '/ui/purchased-products' in request.url.path or '/ui/boms' in request.url.path %}
+        <details class="sidebar-group"{% if product_open %} open{% endif %}>
+          <summary class="sidebar-group-summary">产品管理</summary>
+          <div class="sidebar-subnav">
+            <a href="/ui/self-products" class="{% if request.url.path == '/ui/self-products' %}active{% endif %}">自产品管理</a>
+            <a href="/ui/purchased-products" class="{% if request.url.path == '/ui/purchased-products' %}active{% endif %}">外购品管理</a>
+            <a href="/ui/boms" class="{% if '/ui/boms' in request.url.path %}active{% endif %}">BOM管理</a>
+          </div>
+        </details>
+        {% set production_open = '/ui/production-plans' in request.url.path %}
+        <details class="sidebar-group"{% if production_open %} open{% endif %}>
+          <summary class="sidebar-group-summary">生产管理</summary>
+          <div class="sidebar-subnav">
+            <a href="/ui/production-plans" class="{% if request.url.path == '/ui/production-plans' %}active{% endif %}">生产计划</a>
+          </div>
+        </details>
+        {% set sales_open = '/ui/sales-orders' in request.url.path %}
+        <details class="sidebar-group"{% if sales_open %} open{% endif %}>
+          <summary class="sidebar-group-summary">销售管理</summary>
+          <div class="sidebar-subnav">
+            <a href="/ui/sales-orders" class="{% if request.url.path == '/ui/sales-orders' %}active{% endif %}">销售订单</a>
+          </div>
+        </details>
+        {% set purchase_open = '/ui/purchase-orders' in request.url.path or '/ui/purchase-receipts' in request.url.path or '/ui/purchase-invoices' in request.url.path or '/ui/inquiries' in request.url.path or '/ui/procurement' in request.url.path or '/ui/suppliers' in request.url.path %}
+        <details class="sidebar-group"{% if purchase_open %} open{% endif %}>
+          <summary class="sidebar-group-summary">采购管理</summary>
+          <div class="sidebar-subnav">
+            <a href="/ui/purchase-orders" class="{% if request.url.path == '/ui/purchase-orders' %}active{% endif %}">采购订单</a>
+            <a href="/ui/purchase-receipts" class="{% if request.url.path == '/ui/purchase-receipts' %}active{% endif %}">采购入库</a>
+            <a href="/ui/purchase-invoices" class="{% if request.url.path == '/ui/purchase-invoices' %}active{% endif %}">采购发票</a>
+            <a href="/ui/inquiries" class="{% if request.url.path == '/ui/inquiries' %}active{% endif %}">询价管理</a>
+            <a href="/ui/suppliers" class="{% if '/ui/suppliers' in request.url.path %}active{% endif %}">供应商管理</a>
+            <a href="/ui/procurement" class="{% if '/ui/procurement' in request.url.path %}active{% endif %}">缺料/采购建议</a>
+          </div>
+        </details>
+        <a href="/ui/inventory" class="{% if '/ui/inventory' in request.url.path %}active{% endif %}">库存管理</a>
+        {% set settings_open = '/ui/settings' in request.url.path %}
+        <details class="sidebar-group"{% if settings_open %} open{% endif %}>
+          <summary class="sidebar-group-summary">设置</summary>
+          <div class="sidebar-subnav">
+            <a href="/ui/settings" class="{% if request.url.path == '/ui/settings' %}active{% endif %}">基础设置</a>
+            <a href="/ui/settings/integrations" class="{% if request.url.path == '/ui/settings/integrations' %}active{% endif %}">电商集成</a>
+          </div>
+        </details>
+        <a href="/ui/tutorial" class="{% if '/ui/tutorial' in request.url.path %}active{% endif %}">使用教程</a>
+        <a href="/docs" target="_blank">接口文档 /docs</a>
+      </nav>
+    </aside>
+    <main class="content">
+      <header class="page-header">
+        <h1>{{ page_title }}</h1>
+        <p>大亮ERP / 物料与库存管理系统</p>
+      </header>
+      <section>
+        {% block content %}{% endblock %}
+      </section>
+    </main>
+  </div>
+</body>
+</html>

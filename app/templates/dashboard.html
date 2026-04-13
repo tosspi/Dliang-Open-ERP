@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="grid-cards" id="stats-cards">
+  <div class="card"><h3>物料总数</h3><p id="s_total_materials">-</p></div>
+  <div class="card"><h3>标准件</h3><p id="s_standard_count">-</p></div>
+  <div class="card"><h3>自制件</h3><p id="s_custom_count">-</p></div>
+  <div class="card"><h3>装配件</h3><p id="s_assembly_count">-</p></div>
+  <div class="card"><h3>当前生效BOM数</h3><p id="s_current_bom_count">-</p></div>
+  <div class="card"><h3>低库存物料数</h3><p id="s_low_stock_count">-</p></div>
+  <div class="card"><h3>当前生效版本数</h3><p id="s_current_revision_count">-</p></div>
+</div>
+
+<div class="card">
+  <h3>快捷入口</h3>
+  <div class="btn-row">
+    <a class="btn" href="/export/dashboard">导出 Excel（仪表盘指标）</a>
+    <a class="btn primary" href="/ui/materials">新增/管理物料</a>
+    <a class="btn" href="/ui/boms">查看 BOM</a>
+    <a class="btn" href="/ui/inventory">库存流水</a>
+    <a class="btn" href="/ui/procurement">缺料计算</a>
+  </div>
+</div>
+
+<script>
+async function loadStats() {
+  const res = await fetch('/ui/api/dashboard-stats');
+  const data = await res.json();
+  Object.keys(data).forEach(k => {
+    const el = document.getElementById('s_' + k);
+    if (el) el.textContent = data[k];
+  });
+}
+loadStats();
+</script>
+{% endblock %}

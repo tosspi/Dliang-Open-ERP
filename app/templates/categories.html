@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card">
+  <div class="filters">
+    <label>类别类型
+      <select id="c_type" onchange="onTypeChanged()">
+        <option value="category">物料分类</option>
+        <option value="unit">单位</option>
+        <option value="tax_rate">税率</option>
+        <option value="material_attr">材质</option>
+        <option value="grade">等级</option>
+        <option value="product_category">产品类别</option>
+      </select>
+    </label>
+    <input id="c_name" placeholder="按名称搜索">
+    <button class="btn primary" onclick="openCategoryModal()">新增</button>
+    <button type="button" class="btn" onclick="location.href='/export/categories?type='+encodeURIComponent(document.getElementById('c_type').value)">导出 Excel</button>
+  </div>
+</div>
+<div id="msg" class="msg"></div>
+<div class="card">
+  <div class="list-total"><span id="cat-record-total">共 0 条记录</span></div>
+  <table>
+    <thead>
+      <tr><th>名称</th><th id="th-prefix">编码前缀</th><th>排序</th><th>状态</th><th>备注</th><th>操作</th></tr>
+    </thead>
+    <tbody id="cat-tbody"></tbody>
+  </table>
+</div>
+
+<div id="cat-modal" class="modal hidden">
+  <div class="modal-body">
+    <h3 id="cat-title">新增类别</h3>
+    <form id="cat-form" class="form-grid">
+      <input type="hidden" id="ct_id">
+      <label>名称<input id="ct_name" required></label>
+      <label id="label-prefix">编码前缀<input id="ct_code_prefix"></label>
+      <label>排序<input id="ct_sort_order" type="number" value="0"></label>
+      <label>状态
+        <select id="ct_is_active"><option value="true">启用</option><option value="false">停用</option></select>
+      </label>
+      <label class="full">备注<input id="ct_remark"></label>
+    </form>
+    <div class="btn-row">
+      <button class="btn primary" onclick="saveCategory()">保存</button>
+      <button class="btn" onclick="closeCategoryModal()">取消</button>
+    </div>
+  </div>
+</div>
+<script src="/static/js/categories.js?v=20260409-2"></script>
+{% endblock %}

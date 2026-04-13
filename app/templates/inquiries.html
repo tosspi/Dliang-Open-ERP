@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% block content %}
+<div id="msg" class="msg"></div>
+<div class="card">
+  <div class="filters">
+    <button type="button" class="btn primary" id="inq_new">新建询价单</button>
+    <span id="inq_total" class="list-total-edge">共 0 条</span>
+  </div>
+  <table>
+    <thead>
+      <tr><th>询价单号</th><th>日期</th><th>供应商</th><th>状态</th><th>金额</th><th>操作</th></tr>
+    </thead>
+    <tbody id="inq_tbody"></tbody>
+  </table>
+</div>
+
+<div id="inq_modal" class="modal hidden">
+  <div class="modal-body po-modal-wide">
+    <h3 id="inq_title">询价单</h3>
+    <input type="hidden" id="iq_id">
+    <div class="po-section">
+      <h4>询价头</h4>
+      <p class="muted-hint">新建时交货地址、联系人、电话默认取自「设置」公司信息；选择供应商后联系人/电话可替换为供方档案。</p>
+      <div class="form-grid">
+        <label>询价单号<input id="iq_no" readonly placeholder="保存后生成"></label>
+        <label>询价日期<input id="iq_date" type="date"></label>
+        <label>有效期至<input id="iq_valid_until" type="date"></label>
+        <label>供应商<select id="iq_supplier_company"></select></label>
+        <label>联系人<input id="iq_supplier_contact"></label>
+        <label>电话<input id="iq_supplier_phone"></label>
+        <label class="full">交货地址<input id="iq_delivery_address"></label>
+        <label class="full">付款条件<input id="iq_payment_terms"></label>
+        <label class="full">备注<textarea id="iq_header_remark" rows="2"></textarea></label>
+      </div>
+    </div>
+    <div class="po-section">
+      <h4>从物料库筛选加入</h4>
+      <div class="filters">
+        <input id="iq_f_code" placeholder="按物料编码搜索">
+        <input id="iq_f_name" placeholder="按名称搜索">
+        <select id="iq_f_category"></select>
+        <button class="btn" type="button" id="iq_add_checked">加入询价单</button>
+      </div>
+      <div class="po-lines-wrap" style="max-height: 240px;">
+        <table class="po-lines-table">
+          <thead><tr><th></th><th>编码</th><th>名称</th><th>物料分类</th><th>规格/图号</th><th>单位</th></tr></thead>
+          <tbody id="iq_material_tbody"></tbody>
+        </table>
+      </div>
+    </div>
+    <div class="po-section">
+      <h4>询价明细 <button type="button" class="btn sm" id="iq_add_line">加一行</button></h4>
+      <div class="po-lines-wrap">
+        <table class="po-lines-table">
+          <thead><tr><th>行号</th><th>物料</th><th>编码</th><th>名称</th><th>规格/图号</th><th>材质</th><th>等级</th><th>单位</th><th>数量</th><th>单价</th><th>总价</th><th>备注</th><th></th></tr></thead>
+          <tbody id="iq_lines_tbody"></tbody>
+        </table>
+      </div>
+      <p class="po-total-line muted-hint">单价与总价由供方填写；本单不汇总金额。</p>
+    </div>
+    <div class="btn-row">
+      <button type="button" class="btn primary" id="iq_save">保存</button>
+      <button type="button" class="btn" id="iq_close">关闭</button>
+    </div>
+  </div>
+</div>
+<script src="/static/js/inquiries.js"></script>
+{% endblock %}

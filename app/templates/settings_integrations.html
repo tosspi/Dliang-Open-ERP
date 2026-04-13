@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block content %}
+<div id="msg" class="msg"></div>
+<div class="card" id="settings-sales-platform">
+  <h3 style="margin-top:0">淘宝（C店）</h3>
+  <p class="muted-hint">在 <a href="https://open.taobao.com/" target="_blank" rel="noopener">淘宝开放平台</a> 创建应用，将<strong>回调 URL</strong>填为：<code id="tb_callback_hint"></code>（与下方「授权回调地址」完全一致）。保存 Key/Secret 后先<strong>授权店铺</strong>，再到「销售订单」同步。</p>
+  <form id="tb-form" class="form-grid">
+    <label>App Key<input id="tb_app_key" autocomplete="off"></label>
+    <label>App Secret<input id="tb_app_secret" type="password" autocomplete="new-password" placeholder="已配置则留空不修改"></label>
+    <label class="full">授权回调地址<input id="tb_redirect_uri" placeholder="如 http://你的域名:端口/integrations/taobao/callback"></label>
+    <label>默认物流编码<input id="tb_default_logistics" placeholder="发货弹窗默认带出，如 STO"></label>
+  </form>
+  <p id="tb_auth_status" class="muted-hint"></p>
+  <div class="btn-row" style="margin-top:12px">
+    <button type="button" class="btn primary" id="tb_save">保存淘宝配置</button>
+    <button type="button" class="btn" id="tb_oauth">跳转淘宝授权</button>
+  </div>
+</div>
+
+<div class="card" id="settings-woocommerce">
+  <h3 style="margin-top:0">WordPress WooCommerce</h3>
+  <p class="muted-hint">在 WordPress 后台 <strong>WooCommerce → 设置 → 高级 → REST API</strong> 创建密钥（权限建议 Read/Write）。站点 URL 填首页地址，需<strong>HTTPS</strong>且可访问 <code>/wp-json/wc/v3</code>。保存后在「销售订单」点同步。</p>
+  <form id="wc-form" class="form-grid">
+    <label class="full">站点 URL<input id="wc_site_url" placeholder="https://你的域名.com"></label>
+    <label>Consumer Key<input id="wc_ck" autocomplete="off" placeholder="ck_..."></label>
+    <label>Consumer Secret<input id="wc_cs" type="password" autocomplete="new-password" placeholder="已配置则留空不修改"></label>
+  </form>
+  <p id="wc_sync_hint" class="muted-hint"></p>
+  <div class="btn-row" style="margin-top:12px">
+    <button type="button" class="btn primary" id="wc_save">保存 WooCommerce 配置</button>
+  </div>
+</div>
+<script src="/static/js/settings_integrations.js"></script>
+{% endblock %}

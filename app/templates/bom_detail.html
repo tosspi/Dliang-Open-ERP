@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% block content %}
+<input type="hidden" id="bom_id" value="{{ bom_id }}">
+<div id="msg" class="msg"></div>
+
+<div class="card" id="bom-header-card"></div>
+<div class="card">
+  <div class="filters">
+    <a class="btn" href="/export/bom/{{ bom_id }}">导出 Excel</a>
+    <button class="btn primary" onclick="openBomItemModal()">新增 BOM 明细</button>
+    <span>总成本：<b id="total-cost">0</b></span>
+    <span id="bom-items-total" class="list-total-edge">共 0 条记录</span>
+  </div>
+  <table>
+    <thead>
+      <tr>
+        <th>行号</th><th>物料编码</th><th>物料名称</th><th>规格/图号</th><th>用途</th><th>材质</th><th>等级</th>
+        <th>数量</th><th>单价</th><th>总价</th><th>备注</th><th>操作</th>
+      </tr>
+    </thead>
+    <tbody id="item-tbody"></tbody>
+  </table>
+</div>
+
+<div id="item-modal" class="modal hidden">
+  <div class="modal-body po-modal-wide">
+    <h3 id="item-title">新增 BOM 明细</h3>
+    <input type="hidden" id="bi_id">
+    <div class="po-section">
+      <h4>从物料库筛选加入</h4>
+      <div class="filters">
+        <input id="bi_f_code" placeholder="按物料编码搜索">
+        <input id="bi_f_name" placeholder="按名称搜索">
+        <select id="bi_f_category"></select>
+        <button type="button" class="btn" id="bi_add_checked">加入明细</button>
+      </div>
+      <div class="po-lines-wrap" style="max-height:220px;">
+        <table class="po-lines-table">
+          <thead>
+            <tr><th></th><th>编码</th><th>名称</th><th>物料分类</th><th>规格/图号</th><th>单位</th><th>参考价</th></tr>
+          </thead>
+          <tbody id="bi_material_pick_tbody"></tbody>
+        </table>
+      </div>
+    </div>
+    <div class="po-section">
+      <h4>明细行 <button type="button" class="btn sm" id="bi_add_line">加一行</button></h4>
+      <div class="po-lines-wrap">
+        <table class="po-lines-table" id="bi_lines_table">
+          <thead>
+            <tr>
+              <th>行号</th><th>选择物料</th><th>物料名称</th><th>规格/图号</th><th>用途</th><th>数量</th><th>单价</th><th>总价</th><th>备注</th><th></th>
+            </tr>
+          </thead>
+          <tbody id="bi_lines_tbody"></tbody>
+        </table>
+      </div>
+    </div>
+    <p class="muted-hint">版本、用途、单位、材质、标准、等级等与物料主数据一致的字段在保存时从物料自动带出，无需在此填写。</p>
+    <div class="btn-row">
+      <button class="btn primary" onclick="saveBomItem()">保存</button>
+      <button class="btn" onclick="closeBomItemModal()">取消</button>
+    </div>
+  </div>
+</div>
+<script src="/static/js/boms.js"></script>
+{% endblock %}

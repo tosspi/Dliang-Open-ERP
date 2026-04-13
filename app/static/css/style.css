@@ -1,0 +1,341 @@
+* { box-sizing: border-box; }
+body { margin: 0; font-family: "Segoe UI", Arial, sans-serif; background: #f3f5f9; color: #222; }
+.layout { display: flex; min-height: 100vh; }
+.sidebar { width: 240px; background: #1f2937; color: #fff; padding: 20px; position: fixed; top: 0; left: 0; bottom: 0; overflow-y: auto; }
+.sidebar h2 { margin-top: 0; font-size: 20px; }
+.sidebar-nav { display: flex; flex-direction: column; gap: 0; }
+.sidebar-nav > a,
+.sidebar-nav > details {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+.sidebar-nav > a:last-child { border-bottom: none; }
+.sidebar a { color: #d1d5db; text-decoration: none; padding: 10px 12px; border-radius: 6px; display: block; }
+.sidebar a.active, .sidebar a:hover { background: #374151; color: #fff; }
+.sidebar-group { margin: 0; border-bottom: 1px solid rgba(255, 255, 255, 0.08); }
+.sidebar-group-summary {
+  list-style: none;
+  cursor: pointer;
+  color: #d1d5db;
+  padding: 10px 12px;
+  border-radius: 6px;
+  user-select: none;
+  font-size: 15px;
+  position: relative;
+  padding-left: 28px;
+}
+.sidebar-group-summary::-webkit-details-marker { display: none; }
+.sidebar-group-summary::marker { content: ""; }
+.sidebar-group-summary::before {
+  content: "\25B6";
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 10px;
+  opacity: 0.75;
+  transition: transform 0.15s ease;
+}
+.sidebar-group[open] > .sidebar-group-summary::before {
+  transform: translateY(-50%) rotate(90deg);
+}
+.sidebar-group-summary:hover,
+.sidebar-group[open] > .sidebar-group-summary {
+  background: #374151;
+  color: #fff;
+}
+.sidebar-group:has(.sidebar-subnav a.active) > .sidebar-group-summary {
+  background: #374151;
+  color: #fff;
+}
+.sidebar-subnav {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 4px 0 6px 0;
+  margin: 0 0 0 10px;
+  border-left: 2px solid #4b5563;
+}
+.sidebar-subnav a {
+  padding: 8px 10px 8px 14px;
+  font-size: 13px;
+  border-radius: 0 6px 6px 0;
+}
+.sidebar-subnav a.active,
+.sidebar-subnav a:hover {
+  background: #374151;
+  color: #fff;
+}
+.content { margin-left: 240px; padding: 20px; width: calc(100% - 240px); }
+.page-header { margin-bottom: 16px; }
+.page-header h1 { margin: 0; font-size: 24px; }
+.page-header p { margin: 4px 0 0; color: #666; }
+.card { background: #fff; border: 1px solid #e5e7eb; border-radius: 8px; padding: 12px; margin-bottom: 12px; }
+.materials-table-card { overflow-x: auto; }
+.grid-cards { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+.grid-cards .card h3 { margin: 0 0 8px; font-size: 14px; color: #666; }
+.grid-cards .card p { margin: 0; font-size: 24px; font-weight: 700; }
+.filters { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.list-total { text-align: right; font-size: 13px; color: #64748b; margin-bottom: 8px; }
+.list-total-edge { margin-left: auto; font-size: 13px; color: #64748b; flex-shrink: 0; }
+.card-title-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 8px; flex-wrap: wrap; }
+.card-title-row h3 { margin: 0; font-size: 16px; }
+input, select, textarea { border: 1px solid #d1d5db; border-radius: 6px; padding: 8px; min-width: 120px; }
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+th, td { border: 1px solid #e5e7eb; padding: 8px; text-align: left; vertical-align: top; }
+tbody tr:hover { background: #f9fafb; }
+
+/* 物料表：固定布局 + colgroup；正文字号比全局小 1px */
+.muted-hint { margin: 0 0 12px; font-size: 13px; color: #64748b; }
+.po-modal-wide { width: min(1100px, 98vw); }
+.po-section { margin-bottom: 14px; }
+.po-section h4 { margin: 0 0 8px; font-size: 14px; color: #374151; }
+.po-lines-wrap { overflow-x: auto; max-width: 100%; }
+.po-lines-table { font-size: 12px; min-width: 920px; }
+.po-lines-table input { min-width: 0; width: 100%; box-sizing: border-box; }
+.po-total-line { text-align: right; margin: 8px 0 0; font-size: 14px; }
+
+#materials-table {
+  table-layout: fixed;
+  width: 100%;
+  min-width: 1040px;
+  font-size: 12px;
+}
+#materials-table thead th {
+  text-align: center;
+  vertical-align: middle;
+  white-space: normal;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  line-height: 1.25;
+  padding: 6px 4px;
+}
+#materials-table col.mc-code { width: 3%; }
+#materials-table col.mc-name { width: 6%; }
+#materials-table col.mc-rev { width: 2%; }
+#materials-table col.mc-spec { width: 12%; }
+#materials-table col.mc-unit { width: 2%; }
+#materials-table col.mc-cat { width: 4%; }
+#materials-table col.mc-ptype { width: 4%; }
+#materials-table col.mc-usage { width: 6%; }
+#materials-table col.mc-mat { width: 5%; }
+#materials-table col.mc-grade { width: 2%; }
+#materials-table col.mc-supplier { width: 10%; }
+#materials-table col.mc-link { width: 3%; }
+#materials-table col.mc-status { width: 4%; }
+#materials-table col.mc-active { width: 3%; }
+#materials-table col.mc-stock { width: 4%; }
+#materials-table col.mc-safe { width: 4%; }
+#materials-table col.mc-price { width: 4%; }
+#materials-table col.mc-tax { width: 4%; }
+#materials-table col.mc-remark { width: 8%; }
+#materials-table col.mc-actions { width: 6%; }
+
+/* 名称（数据格）：过长省略；表头已在 thead th 中居中换行 */
+#materials-table td:nth-child(2) {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+/* 规格/图号：可换行 */
+#materials-table td:nth-child(4) {
+  white-space: normal;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+/* 单位、类型、状态（数据格）：单行 */
+#materials-table td:nth-child(5),
+#materials-table td:nth-child(7),
+#materials-table td:nth-child(13),
+#materials-table td:nth-child(14) {
+  white-space: nowrap;
+}
+/* 长文本允许折行 */
+#materials-table td:nth-child(6), #materials-table td:nth-child(8), #materials-table td:nth-child(11),
+#materials-table td:nth-child(19) {
+  word-break: break-word;
+  overflow-wrap: break-word;
+}
+
+#materials-table th:nth-child(20), #materials-table td:nth-child(20) {
+  min-width: 100px;
+  padding: 4px 5px;
+  vertical-align: middle;
+}
+#materials-table .material-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3px 4px;
+}
+#materials-table .material-actions .btn.sm {
+  width: 100%;
+  margin: 0;
+  padding: 2px 2px;
+  font-size: 10px;
+  line-height: 1.3;
+  text-align: center;
+  box-sizing: border-box;
+}
+.materials-batch-bar { margin-bottom: 8px; align-items: center; }
+#materials-table input.me-input,
+#materials-table textarea.me-input {
+  min-width: 0;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  padding: 4px 6px;
+  font-size: 12px;
+  margin: 0;
+  vertical-align: middle;
+}
+#materials-table textarea.me-input {
+  min-height: 40px;
+  resize: vertical;
+  display: block;
+}
+#materials-table td:has(.me-input) {
+  overflow: visible;
+  white-space: normal;
+}
+.btn-row { display: flex; gap: 8px; flex-wrap: wrap; }
+.btn { border: 1px solid #9ca3af; background: #fff; color: #111827; padding: 6px 10px; border-radius: 6px; cursor: pointer; text-decoration: none; display: inline-block; }
+.btn.primary { background: #2563eb; border-color: #2563eb; color: #fff; }
+.btn.sm { padding: 2px 6px; font-size: 12px; }
+.tag { padding: 2px 6px; border-radius: 999px; font-size: 12px; }
+.tag.draft { background: #fef3c7; color: #92400e; }
+.tag.released { background: #dcfce7; color: #166534; }
+.tag.obsolete { background: #fee2e2; color: #991b1b; }
+.tag.current { background: #dbeafe; color: #1d4ed8; }
+.msg { padding: 8px; margin: 8px 0; min-height: 18px; }
+.msg.ok { color: #166534; }
+.msg.err { color: #991b1b; }
+.modal { position: fixed; inset: 0; background: rgba(0,0,0,.3); display: flex; align-items: center; justify-content: center; padding: 20px; }
+.modal.hidden { display: none; }
+.modal-body { width: min(980px, 95vw); max-height: 90vh; overflow: auto; background: #fff; border-radius: 8px; padding: 14px; }
+.form-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+.form-grid label { display: flex; flex-direction: column; gap: 4px; font-size: 13px; }
+.form-grid .full { grid-column: 1 / -1; }
+.form-grid .form-block { display: flex; flex-direction: column; gap: 6px; font-size: 13px; }
+.form-grid .form-block .form-block-title { color: #111827; }
+.checkbox-group { display: flex; gap: 10px; flex-wrap: wrap; padding: 6px 0; }
+.checkbox-group label { display: inline-flex; align-items: center; gap: 4px; font-size: 13px; }
+.checkbox-group input[type="checkbox"] { min-width: 0; width: 14px; height: 14px; padding: 0; margin: 0; }
+.scroll-checkbox-list {
+  display: block;
+  max-height: 220px;
+  overflow-y: auto;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  padding: 8px;
+  background: #fafafa;
+}
+.scroll-checkbox-list label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0 0 6px 0;
+  white-space: nowrap;
+  line-height: 1.2;
+}
+.scroll-checkbox-list label:last-child { margin-bottom: 0; }
+.po-invoice-list { list-style: none; padding: 0; margin: 0; }
+.po-invoice-li { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 8px 0; padding: 8px; background: #fafafa; border-radius: 6px; border: 1px solid #e5e7eb; }
+.po-invoice-no { font-weight: 600; }
+
+/* 采购订单列表 — 状态标签 */
+.po-status-tag {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.po-st-draft { background: #e5e7eb; color: #374151; }
+.po-st-sent { background: #bfdbfe; color: #1e3a8a; }
+.po-st-confirmed { background: #a7f3d0; color: #064e3b; }
+.po-st-partial_received { background: #fde68a; color: #78350f; }
+.po-st-received { background: #a5f3fc; color: #155e75; }
+.po-st-closed { background: #e7e5e4; color: #57534e; }
+.po-st-unknown { background: #f3f4f6; color: #4b5563; }
+
+.po-pay-unpaid { background: #fef3c7; color: #92400e; }
+.po-pay-partial { background: #dbeafe; color: #1e40af; }
+.po-pay-paid { background: #d1fae5; color: #065f46; }
+.po-pay-unknown { background: #f3f4f6; color: #4b5563; }
+
+.po-due-muted {
+  color: #6b7280;
+  font-size: 13px;
+}
+.po-due-overdue {
+  background: #fee2e2 !important;
+  color: #991b1b;
+  font-weight: 600;
+}
+.po-due-today {
+  background: #ffedd5 !important;
+  color: #9a3412;
+  font-weight: 600;
+}
+.po-due-soon {
+  background: #fef9c3 !important;
+  color: #854d0e;
+}
+.po-due-pill {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 700;
+  background: #dc2626;
+  color: #fff;
+  margin-right: 6px;
+  vertical-align: middle;
+  letter-spacing: 0.02em;
+}
+.po-due-pill-today {
+  background: #ea580c;
+}
+
+.po-status-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 6px;
+}
+.po-status-row select {
+  flex: 1;
+  min-width: 200px;
+}
+
+/* 采购入库 — 当前已加载明细的订单行 */
+#pr_order_tbody tr.pr-row-active {
+  background: #eff6ff;
+  outline: 2px solid #93c5fd;
+  outline-offset: -2px;
+}
+
+/* 采购发票列表 — 开票状态 */
+.pi-inv-badge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.35;
+  vertical-align: middle;
+}
+.pi-inv-none {
+  background: #fef3c7;
+  color: #92400e;
+}
+.pi-inv-yes {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+@media (max-width: 1280px) {
+  .grid-cards { grid-template-columns: repeat(2, 1fr); }
+  .form-grid { grid-template-columns: repeat(2, 1fr); }
+}

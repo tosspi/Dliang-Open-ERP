@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+{% block content %}
+<div id="msg" class="msg"></div>
+<div class="card">
+  <p class="muted-hint">本页用于<strong>维护订单正文与明细</strong>、导出 PDF。<strong>订单状态、付款状态</strong>在列表中查看；点「修改状态」可快速调整。新建保存后默认为草稿、待付款。<strong>付款截止日</strong>按供应商档案中的「账期（天）」从订单日期推算（未维护账期则显示「—」）。实物<strong>入库</strong>与<strong>发票</strong>请用侧栏对应菜单。</p>
+  <div class="filters">
+    <button type="button" class="btn primary" id="po_new">新建采购订单</button>
+    <span id="po-total" class="list-total-edge">共 0 条</span>
+  </div>
+  <table>
+    <thead>
+      <tr>
+        <th>订单号</th><th>日期</th><th>供方名称</th><th>订单状态</th><th>付款状态</th><th>付款截止日</th><th>剩余天数</th><th>含税合计</th><th>操作</th>
+      </tr>
+    </thead>
+    <tbody id="po-tbody"></tbody>
+  </table>
+</div>
+
+<div id="po-modal" class="modal hidden">
+  <div class="modal-body po-modal-wide">
+    <h3 id="po-modal-title">采购订单</h3>
+    <input type="hidden" id="po_id">
+    <div class="po-section">
+      <h4>订单头</h4>
+      <div class="form-grid">
+        <label>订单号<input id="po_order_no" readonly placeholder="保存后生成"></label>
+        <label>订单日期<input id="po_order_date" type="date" required></label>
+        <label class="full">交货地址<input id="po_delivery_address"></label>
+        <label class="full">付款条件<input id="po_payment_terms" placeholder="如：月结30天"></label>
+        <label class="full">交货条件<input id="po_delivery_terms" placeholder="如：送货上门"></label>
+        <label class="full">备注<textarea id="po_header_remark" rows="2"></textarea></label>
+      </div>
+    </div>
+    <div class="po-section">
+      <h4>卖方（供方）</h4>
+      <div class="form-grid">
+        <label>公司名称
+          <select id="po_supplier_company" required></select>
+        </label>
+        <label>税号<input id="po_supplier_tax_no"></label>
+        <label>开户行<input id="po_supplier_bank"></label>
+        <label>账号<input id="po_supplier_account"></label>
+        <label class="full">地址<input id="po_supplier_address"></label>
+        <label>电话<input id="po_supplier_phone"></label>
+        <label>联系人<input id="po_supplier_contact"></label>
+      </div>
+    </div>
+    <div class="po-section">
+      <h4>明细行 <button type="button" class="btn sm" id="po_add_line">加一行</button></h4>
+      <div class="po-lines-wrap">
+        <table class="po-lines-table" id="po_lines_table">
+          <thead>
+            <tr>
+              <th>行号</th><th>料号</th><th>名称</th><th>规格/图号</th><th>单位</th><th>数量</th><th>含税单价</th><th>金额</th><th>税率说明</th><th>备注</th><th></th>
+            </tr>
+          </thead>
+          <tbody id="po_lines_tbody"></tbody>
+        </table>
+      </div>
+      <p class="po-total-line">含税合计（元）：<b id="po_line_total">0.00</b></p>
+    </div>
+    <div class="btn-row">
+      <button type="button" class="btn primary" id="po_save">保存</button>
+      <button type="button" class="btn" id="po_close">关闭</button>
+    </div>
+  </div>
+</div>
+
+<div id="po-status-modal" class="modal hidden">
+  <div class="modal-body" style="max-width: 480px;">
+    <h3 style="margin-top:0">修改状态</h3>
+    <p id="po_status_modal_hint" class="muted-hint"></p>
+    <input type="hidden" id="po_status_modal_id">
+    <label style="display:block; margin-top:12px;">订单状态
+      <select id="po_status_modal_sel" style="width:100%; margin-top:6px;"></select>
+    </label>
+    <p class="muted-hint" style="margin:6px 0 0; font-size:12px;">「部分入库 / 已全部入库」一般在采购入库登记后自动更新，也可在此手工调整。</p>
+    <label style="display:block; margin-top:14px;">付款状态
+      <select id="po_payment_modal_sel" style="width:100%; margin-top:6px;">
+        <option value="unpaid">待付款</option>
+        <option value="partial">部分付款</option>
+        <option value="paid">已付款</option>
+      </select>
+    </label>
+    <div class="btn-row" style="margin-top:16px;">
+      <button type="button" class="btn primary" id="po_status_modal_save">保存</button>
+      <button type="button" class="btn" id="po_status_modal_cancel">取消</button>
+    </div>
+  </div>
+</div>
+<script src="/static/js/purchase_orders.js"></script>
+{% endblock %}

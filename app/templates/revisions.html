@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+{% block content %}
+<input type="hidden" id="focus_material_id" value="{{ focus_material_id or '' }}">
+
+<div class="card">
+  <p class="muted-hint">仅列出<strong>自制件、装配件</strong>的版本记录（标准件一般不维护版本）。同一物料仅一个「当前版本」。可从物料表「版本」链接跳入并自动限定该物料。</p>
+  <div class="filters">
+    <input type="text" id="rev_f_code" placeholder="物料编码">
+    <input type="text" id="rev_f_name" placeholder="物料名称">
+    <select id="rev_f_category">
+      <option value="">全部分类</option>
+    </select>
+    <input type="text" id="rev_f_revision" placeholder="版本号">
+    <select id="rev_f_status">
+      <option value="">全部状态</option>
+      <option value="draft">草稿</option>
+      <option value="released">已发布</option>
+      <option value="obsolete">已停用</option>
+    </select>
+    <label style="display:inline-flex;align-items:center;gap:6px;margin:0;">
+      <input type="checkbox" id="rev_f_current_only"> 仅当前版本
+    </label>
+    <button type="button" class="btn primary" id="rev_btn_add">新增版本</button>
+  </div>
+</div>
+
+<div id="msg" class="msg"></div>
+
+<div class="card">
+  <div class="list-total"><span id="rev-record-total">共 0 条记录</span></div>
+  <table>
+    <thead>
+      <tr>
+        <th>物料编码</th><th>物料名称</th><th>类型</th><th>分类</th>
+        <th>版本号</th><th>图号</th><th>图纸 PDF</th><th>模型/其它</th>
+        <th>状态</th><th>当前</th><th>用途</th><th>变更说明</th><th>创建时间</th><th>操作</th>
+      </tr>
+    </thead>
+    <tbody id="rev-tbody"></tbody>
+  </table>
+</div>
+
+<div id="rev-modal" class="modal hidden">
+  <div class="modal-body" style="max-width:min(92vw, 900px);width:100%;max-height:88vh;overflow-y:auto;">
+    <h3 id="rev-title" style="margin-top:0">新增版本</h3>
+    <form id="rev-form" class="form-grid">
+      <input type="hidden" id="r_id">
+      <div id="r_material_row" class="full">
+        <label>所属物料（非标）
+          <select id="r_material_id" required></select>
+        </label>
+      </div>
+      <label>版本号<input id="r_revision" required></label>
+      <label>图号<input id="r_drawing_no"></label>
+      <label>状态
+        <select id="r_status"><option value="draft">draft（草稿）</option><option value="released">released（已发布）</option><option value="obsolete">obsolete（作废）</option></select>
+      </label>
+      <label>设为当前
+        <select id="r_is_current"><option value="false">否</option><option value="true">是</option></select>
+      </label>
+      <label>用途<input id="r_purpose" placeholder="版本用途说明"></label>
+      <label>材质<input id="r_material_name" placeholder="版本属性：材质（非物料名称）"></label>
+      <label>标准<input id="r_standard"></label>
+      <label>等级<input id="r_grade"></label>
+      <label class="full">上传 PDF 图纸（可选，保存后自动提交）
+        <input type="file" id="r_upload_pdf" accept=".pdf,application/pdf" style="width:100%;margin-top:6px;">
+      </label>
+      <label class="full">上传模型/工程文件（可选，保存后自动提交）
+        <input type="file" id="r_upload_model" style="width:100%;margin-top:6px;">
+      </label>
+      <p class="muted-hint full" style="margin:0;font-size:12px;">保存时会先写入版本记录，再上传所选文件（若有）。也可不选文件，稍后在列表中点「上传图纸」。下方路径一般为服务器相对路径，通常无需手填。</p>
+      <label>pdf路径<input id="r_file_path_pdf" placeholder="可选，通常由上传生成"></label>
+      <label>model路径<input id="r_file_path_model" placeholder="可选，通常由上传生成"></label>
+      <label class="full">变更说明<textarea id="r_change_note" rows="4"></textarea></label>
+    </form>
+    <div class="btn-row">
+      <button type="button" class="btn primary" id="rev_btn_save">保存</button>
+      <button type="button" class="btn" id="rev_btn_close_modal">取消</button>
+    </div>
+  </div>
+</div>
+
+<div id="rev-upload-modal" class="modal hidden">
+  <div class="modal-body" style="max-width:420px;">
+    <h3 style="margin-top:0">上传图纸 / 模型</h3>
+    <input type="hidden" id="ru_revision_id">
+    <label style="display:block;margin-top:10px;">类型
+      <select id="ru_slot" style="width:100%;margin-top:6px;">
+        <option value="pdf">PDF 图纸（.pdf）</option>
+        <option value="model">三维/工程模型（STEP/IGES/DWG/DXF 等）</option>
+      </select>
+    </label>
+    <label style="display:block;margin-top:12px;">选择文件
+      <input type="file" id="ru_file" style="width:100%;margin-top:6px;">
+    </label>
+    <p class="muted-hint" style="margin:10px 0 0;font-size:12px;">上传将覆盖该槽位已有文件。模型允许扩展名见接口校验。</p>
+    <div class="btn-row" style="margin-top:16px;">
+      <button type="button" class="btn primary" id="ru_submit">上传</button>
+      <button type="button" class="btn" id="ru_cancel">取消</button>
+    </div>
+  </div>
+</div>
+
+<script src="/static/js/revisions.js"></script>
+{% endblock %}

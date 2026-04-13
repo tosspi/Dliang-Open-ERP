@@ -1,0 +1,33 @@
+# 运行时 SQLite 数据库（勿将含真实业务数据的库提交到公开仓库）
+data/*.db
+data/*.sqlite3
+
+# 用户上传文件（采购发票附件等）
+uploads/**/*
+!uploads/.gitkeep
+!uploads/purchase_invoices/.gitkeep
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.eggs/
+dist/
+build/
+.venv/
+venv/
+# 常见本地虚拟环境目录名
+erp/
+
+# 密钥与本地配置（若自行增加）
+.env
+.env.*
+!.env.example
+
+# IDE / 系统
+.idea/
+.vscode/
+*.swp
+.DS_Store
+Thumbs.db
