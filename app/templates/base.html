@@ -5,6 +5,64 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{{ page_title }} - 大亮ERP</title>
   <link rel="stylesheet" href="/static/css/style.css">
+  <style>
+    .user-menu {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-left: auto;
+    }
+    .user-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      font-size: 14px;
+    }
+    .user-info {
+      text-align: right;
+    }
+    .user-name {
+      font-weight: 500;
+      color: #1e293b;
+      font-size: 14px;
+    }
+    .user-role {
+      font-size: 12px;
+      color: #64748b;
+    }
+    .logout-btn {
+      padding: 6px 16px;
+      background: #f1f5f9;
+      color: #64748b;
+      border: none;
+      border-radius: 6px;
+      font-size: 13px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+    .logout-btn:hover {
+      background: #e2e8f0;
+      color: #1e293b;
+    }
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-left: auto;
+    }
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+  </style>
 </head>
 <body>
   <div class="layout">
@@ -65,6 +123,7 @@
           <div class="sidebar-subnav">
             <a href="/ui/settings" class="{% if request.url.path == '/ui/settings' %}active{% endif %}">基础设置</a>
             <a href="/ui/settings/integrations" class="{% if request.url.path == '/ui/settings/integrations' %}active{% endif %}">电商集成</a>
+            <a href="/auth/users" class="{% if request.url.path == '/auth/users' %}active{% endif %}">用户管理</a>
           </div>
         </details>
         <a href="/ui/tutorial" class="{% if '/ui/tutorial' in request.url.path %}active{% endif %}">使用教程</a>
@@ -73,8 +132,19 @@
     </aside>
     <main class="content">
       <header class="page-header">
-        <h1>{{ page_title }}</h1>
-        <p>大亮ERP / 物料与库存管理系统</p>
+        <div class="header-left">
+          <h1>{{ page_title }}</h1>
+        </div>
+        <div class="header-right">
+          <div class="user-menu">
+            <div class="user-info">
+              <div class="user-name">Lutrade</div>
+              <div class="user-role">管理员</div>
+            </div>
+            <div class="user-avatar">L</div>
+          </div>
+          <a href="/auth/logout" class="logout-btn">退出</a>
+        </div>
       </header>
       <section>
         {% block content %}{% endblock %}

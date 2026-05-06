@@ -1,5 +1,5 @@
-from fastapi import FastAPI
-from fastapi.responses import RedirectResponse
+from fastapi import FastAPI, Request
+from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 
 from app.database import (
@@ -20,6 +20,7 @@ from app.database import (
 )
 from app import crud
 from app.routes import (
+    auth,
     bom,
     company_settings,
     excel_exports,
@@ -40,6 +41,7 @@ from app.routes import (
     system_options,
     ui,
 )
+from app.auth import ensure_admin_user
 
 Base.metadata.create_all(bind=engine)
 ensure_sqlite_material_columns()
@@ -56,15 +58,23 @@ ensure_sqlite_sales_order_lines_product_id()
 _db_boot = SessionLocal()
 try:
     crud.get_or_create_integration_settings(_db_boot)
+    # Create admin user if not exists
+    admin, created = ensure_admin_user(_db_boot, "Lutrade", "Lutrade@zhao1993.", "管理员账户")
+    if created:
+        print(f"[INIT] Admin user 'Lutrade' created successfully")
+    else:
+        print(f"[INIT] Admin user 'Lutrade' already exists")
 finally:
     _db_boot.close()
 
 app = FastAPI(
-    title="大亮ERP / Inventory API",
-    version="0.1.0",
-    description="机械产品物料、BOM、版本、库存、采购建议 MVP",
+    title="大亮ERP / Dliang-ERP",
+    version="0.2.0",
+    description="机械产品物料、BOM、版本、库存、采购建议 ERP系统",
 )
 
+# Include routers
+app.include_router(auth.router)
 app.include_router(materials.router)
 app.include_router(material_categories.router)
 app.include_router(system_options.router)
@@ -90,3 +100,25 @@ app.mount("/static", StaticFiles(directory="app/static"), name="static")
 @app.get("/")
 def root():
     return RedirectResponse(url="/ui")
+
+
+# Auth middleware - protect all /ui/* routes
+@app.middleware("http")
+async def auth_middleware(request: Request, call_next):
+    path = request.url.path
+    
+    # Allow public paths
+    public_paths = ["/", "/auth/login", "/auth/logout", "/docs", "/openapi.json", "/static"]
+    if any(path.startswith(p) for p in public_paths):
+        return await call_next(request)
+    
+    # Check if path requires auth
+    if path.startswith("/ui") or path.startswith("/api/"):
+        from app.auth import get_current_user
+        user = get_current_user(request)
+        if not user:
+            if request.headers.get("Accept") and "text/html" in request.headers.get("Accept", ""):
+                return RedirectResponse(url="/auth/login", status_code=303)
+            return HTMLResponse(content="Unauthorized - 请先登录", status_code=401)
+    
+    return await call_next(request)

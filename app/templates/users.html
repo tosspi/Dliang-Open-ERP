@@ -1,0 +1,169 @@
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+.user-page {
+  padding: 24px;
+}
+
+.page-actions {
+  margin-bottom: 24px;
+}
+
+.btn {
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  border: none;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-primary {
+  background: #3b82f6;
+  color: white;
+}
+
+.btn-primary:hover {
+  background: #2563eb;
+}
+
+.users-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.users-table th,
+.users-table td {
+  padding: 16px;
+  text-align: left;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.users-table th {
+  background: #f8fafc;
+  font-weight: 600;
+  color: #374151;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.users-table tr:last-child td {
+  border-bottom: none;
+}
+
+.users-table tr:hover td {
+  background: #f8fafc;
+}
+
+.role-badge {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.role-admin {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.role-employee {
+  background: #dbeafe;
+  color: #1e40af;
+}
+
+.status-active {
+  color: #059669;
+}
+
+.status-inactive {
+  color: #dc2626;
+}
+
+.user-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #3b82f6;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.user-details h4 {
+  font-weight: 500;
+  color: #1e293b;
+  margin-bottom: 2px;
+}
+
+.user-details span {
+  font-size: 13px;
+  color: #64748b;
+}
+</style>
+
+<div class="user-page">
+  <div class="page-actions">
+    <a href="/auth/register" class="btn btn-primary">+ 添加用户</a>
+  </div>
+  
+  <table class="users-table">
+    <thead>
+      <tr>
+        <th>用户</th>
+        <th>角色</th>
+        <th>状态</th>
+        <th>最后登录</th>
+        <th>创建时间</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for u in users %}
+      <tr>
+        <td>
+          <div class="user-info">
+            <div class="user-avatar">{{ u.username[0]|upper }}</div>
+            <div class="user-details">
+              <h4>{{ u.full_name or u.username }}</h4>
+              <span>@{{ u.username }}</span>
+            </div>
+          </div>
+        </td>
+        <td>
+          <span class="role-badge {% if u.role.value == 'admin' %}role-admin{% else %}role-employee{% endif %}">
+            {% if u.role.value == 'admin' %}管理员{% else %}员工{% endif %}
+          </span>
+        </td>
+        <td>
+          <span class="{% if u.is_active %}status-active{% else %}status-inactive{% endif %}">
+            {{ '活跃' if u.is_active else '禁用' }}
+          </span>
+        </td>
+        <td>{{ u.last_login.strftime('%Y-%m-%d %H:%M') if u.last_login else '从未登录' }}</td>
+        <td>{{ u.created_at.strftime('%Y-%m-%d') }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}
